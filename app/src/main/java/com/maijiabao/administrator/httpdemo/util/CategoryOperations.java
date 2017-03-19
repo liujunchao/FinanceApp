@@ -1,5 +1,7 @@
 package com.maijiabao.administrator.httpdemo.util;
 
+import android.content.Context;
+
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryApiResult;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,7 @@
     tools:context="com.maijiabao.administrator.httpdemo.MainActivity"  >
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:orientation="vertical" android:id="@+id/frm" >
+        android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/frm" >
         <android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/categoryName" android:text="category name"   />
@@ -21,13 +22,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:text="submit category" android:id="@+id/submit" />
 
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/loadingBar" />
     </android.support.v7.widget.LinearLayoutCompat>
+
+
+
     <android.support.v7.widget.ListViewCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/listCategories" android:layout_below="@+id/frm" >
+        android:layout_height="match_parent" android:id="@+id/listCategories" android:layout_below="@+id/frm"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
     </android.support.v7.widget.ListViewCompat>
+
+    <com.maijiabao.administrator.httpdemo.controls.ActionFinanceRecordButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="bottom"
+        app:srcCompat="@android:drawable/ic_menu_add"
+        app:backgroundTint="@android:color/holo_blue_light" android:layout_marginLeft="300dp" android:clickable="true"
+        app:elevation="0dp" />
+
+
 </RelativeLayout>

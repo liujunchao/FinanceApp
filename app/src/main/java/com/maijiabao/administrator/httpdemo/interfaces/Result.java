@@ -10,7 +10,7 @@ public class Result {
     public Result(JSONObject obj){
         try{
             this.status = obj.getString("status");
-            this.message = obj.getString("message");
+            this.message = obj.getString("msg");
         }catch (JSONException ex){
             ex.printStackTrace();
         }

@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements ICategoryApiResul
     ContentLoadingProgressBar loading;
     ListView listCategory;
     CategoryOperations operations;
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,23 +36,20 @@ public class MainActivity extends AppCompatActivity implements ICategoryApiResul
         btnSubmit = (Button) findViewById(R.id.submit);
         txtCateDesc = (EditText)findViewById(R.id.categoryDesc);
         txtCateName = (EditText)findViewById(R.id.categoryName);
-         loading = (ContentLoadingProgressBar)findViewById(R.id.loadingBar);
-        loading.setVisibility(View.GONE);
-        final ProgressDialog progress = new ProgressDialog(this);
+       //  loading = (ContentLoadingProgressBar)findViewById(R.id.loadingBar);
+      //  loading.setVisibility(View.GONE);
+         progress = new ProgressDialog(this);
         this.listCategory = (ListView) findViewById(R.id.listCategories);
         operations = new CategoryOperations(this);
-        operations.getCategories();
+        progress.setMessage("save category");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
+       operations.getCategories();
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  loading.setVisibility(View.VISIBLE);
-                progress.setMessage("save category");
-                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progress.setIndeterminate(true);
-                progress.show();
                 operations.SaveCategory(txtCateName.getText().toString(),txtCateDesc.getText().toString());
-                progress.hide();
-              //  loading.setVisibility(View.GONE);
             }
         });
     }
@@ -72,13 +70,26 @@ public class MainActivity extends AppCompatActivity implements ICategoryApiResul
     }
 
     @Override
-    public void OnCategoriesReceived(JSONArray array) {
-        try{
-            ArrayList<Category> categories =  JObjectConvertor.convert(array);
-            CategoryAdapter adapter = new CategoryAdapter(this,categories);
-            listCategory.setAdapter(adapter);
-        }catch (JSONException ex){
-            ex.printStackTrace();
-        }
+    public void OnCategoriesReceived(final JSONArray array) {
+        listCategory.post(new Runnable() {
+            @Override
+            public void run() {
+                try{
+
+                    ArrayList<Category> categories =  JObjectConvertor.convert(array);
+                    CategoryAdapterNew adapter = new CategoryAdapterNew(categories,MainActivity.this);
+                //    CategoryAdapter adapterNew = new CategoryAdapter(MainActivity.this,categories);
+                    listCategory.setAdapter(adapter);
+
+
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+                progress.hide();
+            }
+        });
+
+
+
     }
 }
