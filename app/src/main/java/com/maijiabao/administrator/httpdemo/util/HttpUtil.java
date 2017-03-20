@@ -28,7 +28,7 @@ public class HttpUtil {
     //final String url = "http://139.199.189.192:3000/";
 
     public static    String sendPost( HashMap<String,String> dic,String method ){
-        String url = "http://192.168.1.100:3000/";
+        String url = "http://192.168.1.51:3000/";
         String requestUrl = url+method;
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         for (Map.Entry<String,String> entry: dic.entrySet()){

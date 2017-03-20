@@ -1,30 +1,24 @@
-package com.maijiabao.administrator.httpdemo;
+package com.maijiabao.administrator.httpdemo.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.maijiabao.administrator.httpdemo.Category;
+import com.maijiabao.administrator.httpdemo.R;
 
 import java.util.ArrayList;
 
 /**
- * Created by liujunchao on 3/18/17.
+ * Created by Administrator on 3/20/2017.
  */
-
-public class CategoryAdapterNew extends BaseAdapter {
-
-    ArrayList<Category> categories;
-    private LayoutInflater inflater;
-
+public class CategoryAdapterNew extends BaseCategoryAdapter {
     public CategoryAdapterNew(ArrayList<Category> categories, Context context){
-        this.categories = categories;
-        this.inflater = LayoutInflater.from(context);
+        super(categories,context);
     }
-
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View returnView(int i, View view, ViewGroup viewGroup) {
         Category category = (Category) getItem(i);
         // Check if an existing view is being reused, otherwise inflate the view
 
@@ -39,21 +33,4 @@ public class CategoryAdapterNew extends BaseAdapter {
         // Return the completed view to render on screen
         return convertView;
     }
-
-    @Override
-    public Object getItem(int i) {
-        return categories.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-
-        return i;
-    }
-
-    @Override
-    public int getCount() {
-        return categories.size();
-    }
-
 }

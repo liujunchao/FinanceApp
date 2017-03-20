@@ -1,4 +1,4 @@
-package com.maijiabao.administrator.httpdemo;
+package com.maijiabao.administrator.httpdemo.adapters;
 
 
 import android.content.Context;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.maijiabao.administrator.httpdemo.Category;
+import com.maijiabao.administrator.httpdemo.R;
 
 import java.util.ArrayList;
 

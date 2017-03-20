@@ -7,13 +7,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 import com.maijiabao.administrator.httpdemo.Category;
-import com.maijiabao.administrator.httpdemo.CategoryAdapterNew;
 import com.maijiabao.administrator.httpdemo.R;
+import com.maijiabao.administrator.httpdemo.adapters.SpinnerCategoryAdapter;
 
 import java.util.ArrayList;
 
@@ -48,10 +48,25 @@ public class ActionFinanceRecordButton extends FloatingActionButton implements V
         ArrayList<Category> list = new ArrayList<>();
         Category obj  = new Category("name1","desc1");
         list.add(obj);
-       // SpinnerAdapter<Category>
-        ArrayAdapter<Category> categories = new ArrayAdapter<Category>(this.getContext(),R.layout.category_spinner_layout,list);
         Spinner spinner = (Spinner)dlgView.findViewById(R.id.spinnerCategory);
-         spinner.setAdapter(categories);
+        spinner.setAdapter(new SpinnerCategoryAdapter(list,this.getContext()));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object obj  = parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Object obj  = parent.getSelectedItem();
+//            }
+//        });
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

@@ -21,18 +21,27 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:text="submit category" android:id="@+id/submit" />
-
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Finance" android:id="@+id/btnToFinance" />
     </android.support.v7.widget.LinearLayoutCompat>
+
 
 
 
     <android.support.v7.widget.ListViewCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/listCategories" android:layout_below="@+id/frm"
+        android:layout_height="match_parent" android:id="@+id/listCategories" android:layout_below="@+id/mycate"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
 
     </android.support.v7.widget.ListViewCompat>
+    <fragment
+        android:id="@+id/mycate"
+        android:layout_below="@id/frm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:name="com.maijiabao.administrator.httpdemo.categoryFragment"
+        tools:layout="@layout/category_fragment_item_list"></fragment>
 
     <com.maijiabao.administrator.httpdemo.controls.ActionFinanceRecordButton
         android:id="@+id/fab"
@@ -42,6 +51,7 @@
         app:srcCompat="@android:drawable/ic_menu_add"
         app:backgroundTint="@android:color/holo_blue_light" android:layout_marginLeft="300dp" android:clickable="true"
         app:elevation="0dp" />
+
 
 
 </RelativeLayout>
