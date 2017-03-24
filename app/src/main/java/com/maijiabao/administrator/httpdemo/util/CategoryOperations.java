@@ -3,6 +3,8 @@ package com.maijiabao.administrator.httpdemo.util;
 import android.content.Context;
 
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryApiResult;
+import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
+import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 
 import org.json.JSONArray;
@@ -23,7 +25,9 @@ public class CategoryOperations {
         this.categoryApi = apiResult;
     }
 
-    public void SaveCategory(final String name, final String desc){
+    public CategoryOperations(){ }
+
+    public void SaveCategory(final IOnSaveCategory op, final String name, final String desc){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +37,7 @@ public class CategoryOperations {
                 String str = HttpUtil.sendPost(map,"insertCategory");
                 try{
                     JSONObject obj = new JSONObject(str);
-                    CategoryOperations.this.categoryApi.onSaveCategory(new Result(obj));
+                    op.OnSaveCategory(new Result(obj));
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }
@@ -42,17 +46,15 @@ public class CategoryOperations {
         thread.start();
     }
 
-    public void getCategories(){
+    public void getCategories(final IOnCategoriesReceived op){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 HashMap<String, String> map = new HashMap<String, String>();
-//                map.put("categoryName",name);
-//                map.put("categoryDesc",desc);
                 String str =  HttpUtil.sendPost(map,"getCategories");
                 try{
                     JSONArray array  = new JSONArray(str);
-                    CategoryOperations.this.categoryApi.OnCategoriesReceived(array);
+                    op.OnCategoriesReceived(array);
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }

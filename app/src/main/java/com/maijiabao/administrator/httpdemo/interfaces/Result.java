@@ -1,5 +1,7 @@
 package com.maijiabao.administrator.httpdemo.interfaces;
 
+import android.os.Message;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,4 +20,11 @@ public class Result {
     }
     public String status;
     public String message;
+
+    public Message ConvertToMessage(){
+        Message msg  = new Message();
+        msg.what = Integer.parseInt(this.status);
+        msg.obj = this;
+        return msg;
+    }
 }

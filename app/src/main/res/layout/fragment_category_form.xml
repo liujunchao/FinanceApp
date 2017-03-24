@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/frm" android:padding="10dp" >
+<android.support.v7.widget.AppCompatEditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:id="@+id/cName"  android:hint="类别名称"  />
+<android.support.v7.widget.AppCompatEditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:id="@+id/cDesc"  android:hint="类别描述" />
+<android.support.v7.widget.AppCompatButton
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:text="submit category" android:id="@+id/btnSubmit"  />
+</android.support.v7.widget.LinearLayoutCompat>
