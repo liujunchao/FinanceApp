@@ -3,6 +3,7 @@ package com.maijiabao.administrator.httpdemo.util;
 import android.content.Context;
 
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryApiResult;
+import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
@@ -18,16 +19,9 @@ import java.util.Map;
  * Created by Administrator on 3/14/2017.
  */
 public class CategoryOperations {
+    private CategoryOperations(){}
 
-    private ICategoryApiResult categoryApi;
-
-    public CategoryOperations(ICategoryApiResult apiResult){
-        this.categoryApi = apiResult;
-    }
-
-    public CategoryOperations(){ }
-
-    public void SaveCategory(final IOnSaveCategory op, final String name, final String desc){
+    public static void SaveCategory(final IOnSaveCategory op, final String name, final String desc){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -46,7 +40,7 @@ public class CategoryOperations {
         thread.start();
     }
 
-    public void getCategories(final IOnCategoriesReceived op){
+    public static void getCategories(final IOnCategoriesReceived op){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -55,6 +49,24 @@ public class CategoryOperations {
                 try{
                     JSONArray array  = new JSONArray(str);
                     op.OnCategoriesReceived(array);
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void dropCategory(final ICategoryRemoved op, final String id ){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("id",id);
+                String str = HttpUtil.sendPost(map,"dropCategory");
+                try{
+                    JSONObject obj = new JSONObject(str);
+                    op.CategoryRemoved(new Result(obj));
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }

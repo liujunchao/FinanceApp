@@ -51,8 +51,7 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryOperations operations = new CategoryOperations();
-                operations.SaveCategory(CategoryFormFragment.this,txtName.getText().toString(),txtDesc.getText().toString());
+                CategoryOperations.SaveCategory(CategoryFormFragment.this,txtName.getText().toString(),txtDesc.getText().toString());
             }
         });
         return view;

@@ -16,6 +16,7 @@ public class Category {
     }
     public String categoryName;
     public String categoryDesc;
+    public String id;
 
     public static ArrayList<Category> GetCategories(JSONArray array){
         ArrayList<Category> list=  new ArrayList<>();

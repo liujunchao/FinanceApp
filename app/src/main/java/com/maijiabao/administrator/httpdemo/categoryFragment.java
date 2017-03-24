@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
+import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
+import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 
 import org.json.JSONArray;
@@ -22,7 +24,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
-public class categoryFragment extends Fragment implements IOnCategoriesReceived{
+public class categoryFragment extends Fragment implements IOnCategoriesReceived,ICategoryRemoved{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,15 +34,19 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived{
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
-            RecyclerView view =  (RecyclerView)getView();
-            view.setAdapter(new CateListRecyclerViewAdapter(list, null));
+            switch (msg.what){
+                case 10:
+
+                    break;
+                default:
+                    ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
+                    RecyclerView view =  (RecyclerView)getView();
+                    view.setAdapter(new CateListRecyclerViewAdapter(list, categoryFragment.this));
+                    break;
+            }
+
         }
     };
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public categoryFragment() {
     }
 
@@ -71,6 +77,13 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived{
     }
 
     @Override
+    public void CategoryRemoved(Result rlt) {
+        Message msg  = new Message();
+        msg.what = 10;
+        this.mHandler.sendMessage( msg);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_fragment_item_list, container, false);
@@ -86,8 +99,7 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived{
             }
          //   recyclerView.setAdapter(new CateListRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
-        CategoryOperations operations = new CategoryOperations();
-        operations.getCategories(this);
+        CategoryOperations.getCategories(this);
 
         return view;
     }

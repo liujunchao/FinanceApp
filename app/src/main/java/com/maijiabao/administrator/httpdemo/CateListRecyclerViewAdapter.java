@@ -4,10 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.maijiabao.administrator.httpdemo.ItemFragment.OnListFragmentInteractionListener;
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent.DummyItem;
+import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
+import com.maijiabao.administrator.httpdemo.interfaces.Result;
+import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +21,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRecyclerViewAdapter.ViewHolder> {
+public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRecyclerViewAdapter.ViewHolder> implements ICategoryRemoved {
 
     private final ArrayList<Category>  mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final ICategoryRemoved mListener;
 
-    public CateListRecyclerViewAdapter(ArrayList<Category>  items, OnListFragmentInteractionListener listener) {
+    public CateListRecyclerViewAdapter(ArrayList<Category>  items, ICategoryRemoved listener) {
         mValues = items;
         mListener = listener;
     }
@@ -35,18 +39,26 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).categoryName);
         holder.mContentView.setText(mValues.get(position).categoryDesc);
+        holder.mBtnRemoveCate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategoryOperations.dropCategory(CateListRecyclerViewAdapter.this,holder.mItem.id);
+                mValues.remove(position);
+                notifyItemChanged(position);
+
+            }
+        });
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                   // mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -57,10 +69,16 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
         return mValues.size();
     }
 
+    @Override
+    public void CategoryRemoved(Result rlt) {
+        this.mListener.CategoryRemoved(rlt);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final Button mBtnRemoveCate;
         public Category mItem;
 
         public ViewHolder(View view) {
@@ -68,6 +86,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mBtnRemoveCate  = (Button) view.findViewById(R.id.btnRemoveCate);
         }
 
         @Override
