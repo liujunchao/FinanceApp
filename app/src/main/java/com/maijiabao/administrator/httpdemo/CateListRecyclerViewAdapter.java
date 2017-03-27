@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.maijiabao.administrator.httpdemo.ItemFragment.OnListFragmentInteractionListener;
@@ -25,7 +26,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
 
     private final ArrayList<Category>  mValues;
     private final ICategoryRemoved mListener;
-
+    private int pos;
     public CateListRecyclerViewAdapter(ArrayList<Category>  items, ICategoryRemoved listener) {
         mValues = items;
         mListener = listener;
@@ -42,14 +43,13 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).categoryName);
-        holder.mContentView.setText(mValues.get(position).categoryDesc);
+        holder.mIdView.setText(holder.mItem.categoryName);
+        holder.mContentView.setText(holder.mItem.categoryDesc);
         holder.mBtnRemoveCate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pos = position;
                 CategoryOperations.dropCategory(CateListRecyclerViewAdapter.this,holder.mItem.id);
-                mValues.remove(position);
-                notifyItemChanged(position);
 
             }
         });
@@ -64,6 +64,15 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
         });
     }
 
+    public void refreshDataChanged(ArrayList<Category> newDataSet){
+        this.mValues.clear();
+        this.mValues.addAll(newDataSet);
+        notifyDataSetChanged();
+    }
+    public void refreshDataChanged(){
+        mValues.remove(this.pos);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return mValues.size();
@@ -71,6 +80,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
 
     @Override
     public void CategoryRemoved(Result rlt) {
+
         this.mListener.CategoryRemoved(rlt);
     }
 
@@ -78,7 +88,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public final Button mBtnRemoveCate;
+        public final ImageButton mBtnRemoveCate;
         public Category mItem;
 
         public ViewHolder(View view) {
@@ -86,7 +96,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
-            mBtnRemoveCate  = (Button) view.findViewById(R.id.btnRemoveCate);
+            mBtnRemoveCate  = (ImageButton) view.findViewById(R.id.btnRemoveCate);
         }
 
         @Override

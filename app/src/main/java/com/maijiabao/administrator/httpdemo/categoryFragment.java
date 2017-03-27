@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
+import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 
@@ -24,24 +25,31 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
-public class categoryFragment extends Fragment implements IOnCategoriesReceived,ICategoryRemoved{
+public class categoryFragment extends Fragment implements IOnCategoriesReceived,ICategoryRemoved,IOnSaveCategory{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private boolean isDataReload = false;
     private ItemFragment.OnListFragmentInteractionListener mListener;
+    private CateListRecyclerViewAdapter adapter;
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
+                case 5:
+                    ArrayList<Category> refreshList  = (ArrayList<Category>)msg.obj;
+                    adapter.refreshDataChanged(refreshList);
+                    break;
                 case 10:
-
+                    adapter.refreshDataChanged();
                     break;
                 default:
                     ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
                     RecyclerView view =  (RecyclerView)getView();
-                    view.setAdapter(new CateListRecyclerViewAdapter(list, categoryFragment.this));
+                    adapter = new CateListRecyclerViewAdapter(list, categoryFragment.this);
+                    view.setAdapter(adapter);
                     break;
             }
 
@@ -71,9 +79,17 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived,
 
     @Override
     public void OnCategoriesReceived(JSONArray array) {
+
+        ArrayList<Category> list = JObjectConvertor.convert(array);
         Message msg  = new Message();
-        msg.obj = JObjectConvertor.convert(array);
+        msg.obj = list;
+        if(isDataReload){
+            msg.what = 5;
+        }
         this.mHandler.sendMessage(msg);
+
+
+
     }
 
     @Override
@@ -81,6 +97,12 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived,
         Message msg  = new Message();
         msg.what = 10;
         this.mHandler.sendMessage( msg);
+    }
+
+    @Override
+    public void OnSaveCategory(Result rlt) {
+        isDataReload = true;
+        CategoryOperations.getCategories(this);
     }
 
     @Override
@@ -103,7 +125,6 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived,
 
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {

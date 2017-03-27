@@ -1,16 +1,22 @@
 package com.maijiabao.administrator.httpdemo.util;
 
+        import android.content.Context;
+        import android.telephony.TelephonyManager;
         import android.util.Log;
 
+        import org.apache.http.Header;
+        import org.apache.http.HeaderElement;
         import org.apache.http.HttpEntity;
         import org.apache.http.HttpResponse;
         import org.apache.http.NameValuePair;
+        import org.apache.http.ParseException;
         import org.apache.http.client.ClientProtocolException;
         import org.apache.http.client.HttpClient;
         import org.apache.http.client.entity.UrlEncodedFormEntity;
         import org.apache.http.client.methods.HttpPost;
         import org.apache.http.impl.client.DefaultHttpClient;
         import org.apache.http.message.BasicNameValuePair;
+        import org.apache.http.protocol.HTTP;
         import org.json.JSONException;
         import org.json.JSONObject;
 
@@ -27,6 +33,12 @@ public class HttpUtil {
 
     //final String url = "http://139.199.189.192:3000/";
 
+    public static   void setIMEI(Context context){
+        TelephonyManager mngr = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+        IMEI = mngr.getDeviceId();
+    }
+
+   public static String IMEI = "";
     public static    String sendPost( HashMap<String,String> dic,String method ){
         String url = "http://192.168.1.51:3000/";
         String requestUrl = url+method;
@@ -39,7 +51,9 @@ public class HttpUtil {
         HttpClient client  = new DefaultHttpClient();
         HttpPost post  = new HttpPost(requestUrl);
         try{
-            post.setEntity(new UrlEncodedFormEntity(pairs));
+            post.addHeader("imei",IMEI);
+            post.setEntity(new UrlEncodedFormEntity(pairs, HTTP.UTF_8));
+
         }catch (UnsupportedEncodingException e){
             e.printStackTrace();
         }

@@ -33,9 +33,22 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
             //CategoryFormFragment.this.getView().setVisibility(View.GONE);
             Toast.makeText(CategoryFormFragment.this.getActivity(),"保存成功", Toast.LENGTH_LONG).show();
             getDialog().dismiss();
+            CategoryFormFragment.this.notifyObserver();
         }
     };
      public CategoryFormFragment() {  }
+
+    private IOnSaveCategory observer;
+
+    public void addObserver(IOnSaveCategory observer){
+        this.observer = observer;
+    }
+
+    public void notifyObserver(){
+        if(this.observer!=null){
+            this.observer.OnSaveCategory(null);
+        }
+    }
 
 
 

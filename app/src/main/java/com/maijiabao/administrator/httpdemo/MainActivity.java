@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +24,7 @@ import com.maijiabao.administrator.httpdemo.interfaces.ICategoryApiResult;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
+import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +50,26 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         }
     };
 
+    private FloatingActionButton fabAddCate;
+
+    private categoryFragment cateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        HttpUtil.setIMEI(this);
+        fabAddCate = (FloatingActionButton)findViewById(R.id.fabAddCate);
+        cateFragment  = (categoryFragment)  getSupportFragmentManager().findFragmentById(R.id.mycate);
+
+        fabAddCate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategoryFormFragment fragment  = new CategoryFormFragment();
+                fragment.addObserver(cateFragment);
+                fragment.show(getFragmentManager(),"CategoryFormFragment");
+            }
+        });
        //  loading = (ContentLoadingProgressBar)findViewById(R.id.loadingBar);
       //  loading.setVisibility(View.GONE);
         // progress = new ProgressDialog(this);
@@ -60,14 +78,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 //        progress.setIndeterminate(true);
 //        progress.show();
        // operations.getCategories();
-//        btnSubmit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//               // operations.SaveCategory(MainActivity.this,txtCateName.getText().toString(),txtCateDesc.getText().toString());
-//                CategoryFormFragment fragment  = new CategoryFormFragment();
-//                fragment.show(getFragmentManager(),"CategoryFormFragment");
-//            }
-//        });
+
 
 //        btnFinance.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -77,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 //            }
 //        });
     }
+
+
 
     public void notifyMessage(String content){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
