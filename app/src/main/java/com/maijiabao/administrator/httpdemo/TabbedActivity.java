@@ -18,6 +18,12 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.maijiabao.administrator.httpdemo.util.DateUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class TabbedActivity extends AppCompatActivity {
 
     /**
@@ -102,10 +108,10 @@ public class TabbedActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(String date) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString(ARG_SECTION_NUMBER, date);
             fragment.setArguments(args);
             return fragment;
         }
@@ -115,7 +121,7 @@ public class TabbedActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText(getString(R.string.section_format, getArguments().getString(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
@@ -126,22 +132,41 @@ public class TabbedActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+
+        private ArrayList<String> dateList = new ArrayList<String>();
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            this.generateDays();
+        }
+
+        public void generateDays(){
+            Date dNow = new Date( );
+            SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+            String currentDay  = ft.format(dNow);
+            String prevDay = DateUtil.previousMonthByDate(currentDay);
+            while (true){
+                this.dateList.add(prevDay);
+                if(currentDay.equals(prevDay)){
+                    break;
+                }
+                prevDay = DateUtil.tonextday(prevDay);
+            }
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            String date = dateList.get(position);
+            return PlaceholderFragment.newInstance(date);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return dateList.size();
         }
+
 
         @Override
         public CharSequence getPageTitle(int position) {

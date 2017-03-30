@@ -1,4 +1,4 @@
-package com.maijiabao.administrator.httpdemo;
+package com.maijiabao.administrator.httpdemo.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.maijiabao.administrator.httpdemo.Category;
+import com.maijiabao.administrator.httpdemo.models.Category;
 import com.maijiabao.administrator.httpdemo.R;
 
 import java.util.ArrayList;

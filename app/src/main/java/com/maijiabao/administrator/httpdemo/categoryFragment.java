@@ -12,16 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
+import com.maijiabao.administrator.httpdemo.models.Category;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
+import com.maijiabao.administrator.httpdemo.models.JObjectCategoryConvertor;
 
 import org.json.JSONArray;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -80,7 +80,7 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived,
     @Override
     public void OnCategoriesReceived(JSONArray array) {
 
-        ArrayList<Category> list = JObjectConvertor.convert(array);
+        ArrayList<Category> list = JObjectCategoryConvertor.convert(array);
         Message msg  = new Message();
         msg.obj = list;
         if(isDataReload){

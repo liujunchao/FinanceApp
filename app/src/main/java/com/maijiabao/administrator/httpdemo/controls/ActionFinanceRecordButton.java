@@ -8,10 +8,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.maijiabao.administrator.httpdemo.Category;
+import com.maijiabao.administrator.httpdemo.models.Category;
 import com.maijiabao.administrator.httpdemo.R;
 import com.maijiabao.administrator.httpdemo.adapters.SpinnerCategoryAdapter;
 

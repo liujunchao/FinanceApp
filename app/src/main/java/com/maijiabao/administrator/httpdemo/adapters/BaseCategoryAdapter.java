@@ -5,10 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import com.maijiabao.administrator.httpdemo.Category;
-import com.maijiabao.administrator.httpdemo.R;
+import com.maijiabao.administrator.httpdemo.models.Category;
 
 import java.util.ArrayList;
 
