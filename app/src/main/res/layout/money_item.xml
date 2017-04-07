@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"  android:paddingLeft="50dp" android:paddingRight="50dp">
+    android:layout_height="match_parent"  android:padding="50dp" >
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal" android:id="@+id/type">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="支出" android:checked="true" android:id="@+id/typeIn"  />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="收入" android:id="@+id/typeOut" />
+    </RadioGroup>
 <android.support.v7.widget.LinearLayoutCompat
     android:layout_width="match_parent"
     android:layout_height="wrap_content" android:orientation="horizontal">
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="金额" />
+        android:layout_height="wrap_content" android:text="金额" android:textAlignment="center" />
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:inputType="numberDecimal" android:id="@+id/txtAmount" />
@@ -20,16 +30,19 @@
             android:layout_height="wrap_content" android:text="描述" />
         <android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:inputType="numberDecimal" android:id="@+id/txtDesc" />
+            android:layout_height="wrap_content"   android:id="@+id/txtDesc" />
     </android.support.v7.widget.LinearLayoutCompat>
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal">
+        android:layout_height="wrap_content" android:orientation="horizontal" android:paddingTop="10dp" android:paddingBottom="10dp">
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:text="类别" />
         <android.support.v7.widget.AppCompatSpinner
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/spinnerCategory"></android.support.v7.widget.AppCompatSpinner>
+            android:layout_height="wrap_content" android:id="@+id/spinnerCategory" android:textAlignment="center"></android.support.v7.widget.AppCompatSpinner>
     </android.support.v7.widget.LinearLayoutCompat>
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:text="submit money" android:id="@+id/btnSubmitMoney"  />
 </LinearLayout>

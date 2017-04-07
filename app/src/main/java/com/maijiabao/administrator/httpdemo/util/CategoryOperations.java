@@ -1,8 +1,5 @@
 package com.maijiabao.administrator.httpdemo.util;
 
-import android.content.Context;
-
-import com.maijiabao.administrator.httpdemo.interfaces.ICategoryApiResult;
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
@@ -13,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Administrator on 3/14/2017.

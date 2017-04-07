@@ -2,6 +2,8 @@ package com.maijiabao.administrator.httpdemo;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,10 +14,19 @@ import android.view.ViewGroup;
 
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent.DummyItem;
+import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordReceived;
+import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveMoneyRecords;
+import com.maijiabao.administrator.httpdemo.interfaces.Result;
+import com.maijiabao.administrator.httpdemo.models.Category;
+import com.maijiabao.administrator.httpdemo.models.MoneyRecord;
+import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class MoneyRecordsFragment extends Fragment {
+public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordReceived,IOnSaveMoneyRecords {
 
     // TODO: Customize parameter argument names
     private static final String DATE_KEY = "dateKey";
@@ -24,10 +35,8 @@ public class MoneyRecordsFragment extends Fragment {
     private String mDate;
     private ItemFragment.OnListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+    private Handler mHandler = new Handler(){ };
+
     public MoneyRecordsFragment() {
     }
 
@@ -63,21 +72,29 @@ public class MoneyRecordsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MoneyRecordsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
         }
+        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
         return view;
     }
 
+    @Override
+    public void OnRecordsReceived(JSONArray array) {
+      final ArrayList<MoneyRecord> list =  MoneyRecord.convert(array);
+        this.mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView view =  (RecyclerView)getView();
+                view.setAdapter(new MoneyRecordsRecyclerViewAdapter(list, mListener));
+            }
+        });
+    }
+
+
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ItemFragment.OnListFragmentInteractionListener) {
-            mListener = (ItemFragment.OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+    public void OnSaveMoneyRecords(Result rlt) {
+        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
     }
 
     @Override

@@ -1,6 +1,11 @@
 package com.maijiabao.administrator.httpdemo.util;
 
+        import android.Manifest;
+        import android.app.Activity;
         import android.content.Context;
+        import android.content.pm.PackageManager;
+        import android.support.v4.app.ActivityCompat;
+        import android.support.v4.content.ContextCompat;
         import android.telephony.TelephonyManager;
         import android.util.Log;
 
@@ -33,9 +38,8 @@ public class HttpUtil {
 
     //final String url = "http://139.199.189.192:3000/";
 
-    public static   void setIMEI(Context context){
-        TelephonyManager mngr = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
-        IMEI = mngr.getDeviceId();
+    public static  void setIMEI(String imei){
+        IMEI = imei;
     }
 
    public static String IMEI = "";

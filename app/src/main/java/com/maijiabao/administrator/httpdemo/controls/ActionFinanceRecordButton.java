@@ -60,12 +60,6 @@ public class ActionFinanceRecordButton extends FloatingActionButton implements V
 
             }
         });
-//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Object obj  = parent.getSelectedItem();
-//            }
-//        });
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

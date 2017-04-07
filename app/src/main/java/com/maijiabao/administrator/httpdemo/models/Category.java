@@ -6,9 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by Administrator on 3/15/2017.
- */
+
 public class Category {
     public Category(String name,String desc){
         this.categoryDesc = desc;
@@ -17,6 +15,7 @@ public class Category {
     public String categoryName;
     public String categoryDesc;
     public String id;
+    public String type;
 
     public static ArrayList<Category> GetCategories(JSONArray array){
         ArrayList<Category> list=  new ArrayList<>();

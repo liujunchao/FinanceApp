@@ -7,21 +7,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.maijiabao.administrator.httpdemo.ItemFragment.OnListFragmentInteractionListener;
-import com.maijiabao.administrator.httpdemo.dummy.DummyContent.DummyItem;
+import com.maijiabao.administrator.httpdemo.models.Category;
+import com.maijiabao.administrator.httpdemo.models.MoneyRecord;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecordsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<MoneyRecord> mValues ;
     private final OnListFragmentInteractionListener mListener;
 
-    public MoneyRecordsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MoneyRecordsRecyclerViewAdapter(List<MoneyRecord> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,26 +26,19 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_record, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        if(holder.mItem!=null && holder.mAmountView!=null){
+            holder.mAmountView.setText(holder.mItem.amount);
+            holder.mCategoryNameView.setText(holder.mItem.categoryName);
+            holder.mCreatorView.setText(holder.mItem.creator);
+        }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
     }
 
     @Override
@@ -58,20 +48,21 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mAmountView;
+        public final TextView mCreatorView;
+        public final TextView mCategoryNameView;
+        public MoneyRecord mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mAmountView = (TextView) view.findViewById(R.id.amount);
+            mCreatorView = (TextView) view.findViewById(R.id.creator);
+            mCategoryNameView = (TextView) view.findViewById(R.id.categoryName);
         }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+        //@Override
+//        public String toString() {
+//            return super.toString() + " '" + mAmountView.getText() + "'";
+//        }
     }
 }
