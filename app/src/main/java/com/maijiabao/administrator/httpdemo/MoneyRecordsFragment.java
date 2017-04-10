@@ -72,9 +72,9 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
+            MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
         }
-        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+
         return view;
     }
 

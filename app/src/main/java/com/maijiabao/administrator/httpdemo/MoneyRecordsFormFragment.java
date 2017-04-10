@@ -46,6 +46,7 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveM
             ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
               Spinner spinner = (Spinner)getView().findViewById(R.id.spinnerCategory);
 
+
             Context ctx = MoneyRecordsFormFragment.this.getActivity();
         spinner.setAdapter(new SpinnerCategoryAdapter(list,ctx));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -125,6 +126,7 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveM
 
     @Override
     public void OnSaveMoneyRecords(Result rlt) {
+        this.notifyObserver();
         this.mhandler.post(new Runnable() {
             @Override
             public void run() {

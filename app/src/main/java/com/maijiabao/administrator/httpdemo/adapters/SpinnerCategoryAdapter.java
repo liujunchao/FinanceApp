@@ -16,11 +16,10 @@ public class SpinnerCategoryAdapter extends BaseCategoryAdapter {
     public View returnView(int i, View view, ViewGroup viewGroup) {
         Category category = (Category) getItem(i);
         // Check if an existing view is being reused, otherwise inflate the view
-
-        View convertView = this.inflater.inflate(R.layout.category_spinner_layout,null);
-
+        //android.R.layout.simple_spinner_item
+        View convertView = this.inflater.inflate(android.R.layout.simple_spinner_item,null);
         // Lookup view for data population
-        TextView name = (TextView) convertView.findViewById(R.id.categoryName);
+        TextView name = (TextView) convertView.findViewById(android.R.id.text1);
         // Populate the data into the template view using the data object
         name.setText(category.categoryName);
         // Return the completed view to render on screen

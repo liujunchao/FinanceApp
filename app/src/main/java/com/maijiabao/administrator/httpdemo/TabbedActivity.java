@@ -52,6 +52,7 @@ public class TabbedActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(mSectionsPagerAdapter.getCount()-1);
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -75,9 +76,11 @@ public class TabbedActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 MoneyRecordsFormFragment fragment  = new MoneyRecordsFormFragment();
                 fragment.SetDate( TabbedActivity.this.date);
                 fragment.show(getFragmentManager(),"MoneyRecordsFormFragment");
+                fragment.addObserver(mSectionsPagerAdapter.currentFragment);
             }
         });
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
@@ -130,6 +133,7 @@ public class TabbedActivity extends AppCompatActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
+        private MoneyRecordsFragment currentFragment;
         private ArrayList<String> dateList = new ArrayList<String>();
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -150,6 +154,12 @@ public class TabbedActivity extends AppCompatActivity {
                 }
                 prevDay = DateUtil.tonextday(prevDay);
             }
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            this.currentFragment = (MoneyRecordsFragment) object;
         }
 
         @Override
