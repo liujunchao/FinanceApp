@@ -50,23 +50,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 fragment.show(getFragmentManager(),"CategoryFormFragment");
             }
         });
-       //  loading = (ContentLoadingProgressBar)findViewById(R.id.loadingBar);
-      //  loading.setVisibility(View.GONE);
-        // progress = new ProgressDialog(this);
-//        progress.setMessage("save category");
-//        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//        progress.setIndeterminate(true);
-//        progress.show();
-       // operations.getCategories();
 
-
-//        btnFinance.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this,FinanceActivity.class);
-//                startActivity(intent);
-//            }
-//        });
     }
 
 

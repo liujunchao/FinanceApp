@@ -12,6 +12,7 @@ import com.maijiabao.administrator.httpdemo.dummy.DummyContent.DummyItem;
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.models.Category;
+import com.maijiabao.administrator.httpdemo.models.MoneyType;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 
 import java.util.ArrayList;
@@ -43,7 +44,11 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
 
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(holder.mItem.categoryName);
-        holder.mContentView.setText(holder.mItem.categoryDesc);
+        String type  = "花费";
+        if(holder.mItem.type == MoneyType.earnings.toString()){
+            type="收入";
+        }
+        holder.mContentView.setText(type);
         holder.mBtnRemoveCate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

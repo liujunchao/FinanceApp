@@ -11,19 +11,18 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-/**
- * Created by Administrator on 3/14/2017.
- */
+
 public class CategoryOperations {
     private CategoryOperations(){}
 
-    public static void SaveCategory(final IOnSaveCategory op, final String name, final String desc){
+    public static void SaveCategory(final IOnSaveCategory op, final String name, final String desc,final String type){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("categoryName",name);
                 map.put("categoryDesc",desc);
+                map.put("type",type);
                 String str = HttpUtil.sendPost(map,"insertCategory");
                 try{
                     JSONObject obj = new JSONObject(str);

@@ -20,6 +20,7 @@ public class MoneyRecord {
     public String categoryName;
     public String belongDate;
     public String id;
+    public boolean isCurrent;
 
     public static ArrayList<MoneyRecord> convert(JSONArray array) {
         ArrayList<MoneyRecord> list = new ArrayList<MoneyRecord>();
@@ -35,6 +36,7 @@ public class MoneyRecord {
                 obj.categoryId = json.get("categoryId").toString();
                 obj.desc =  json.get("desc").toString();
                 obj.creator = json.get("creator").toString();
+                obj.isCurrent =Boolean.parseBoolean( json.get("isCurrent").toString());
                 // obj.id = id;
                 list.add(obj);
             }

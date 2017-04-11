@@ -2,6 +2,7 @@ package com.maijiabao.administrator.httpdemo.util;
 
         import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
+        import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordDeleted;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordReceived;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveMoneyRecords;
@@ -58,16 +59,16 @@ public class MoneyRecordsOperations {
         thread.start();
     }
 
-    public static void dropRecord(final ICategoryRemoved op, final String id ){
+    public static void dropRecord(final IOnMoneyRecordDeleted op, final String id ){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("id",id);
-                String str = HttpUtil.sendPost(map,"dropCategory");
+                String str = HttpUtil.sendPost(map,"dropMoneyRecord");
                 try{
                     JSONObject obj = new JSONObject(str);
-                    op.CategoryRemoved(new Result(obj));
+                    op.MoneyRecordDeleted(new Result(obj));
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }

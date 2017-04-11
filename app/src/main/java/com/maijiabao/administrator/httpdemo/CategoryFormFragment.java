@@ -14,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
+import com.maijiabao.administrator.httpdemo.models.MoneyType;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 
 
@@ -40,6 +43,8 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
 
     private IOnSaveCategory observer;
 
+    public String type;
+
     public void addObserver(IOnSaveCategory observer){
         this.observer = observer;
     }
@@ -58,13 +63,28 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
         // Inflate the layout for this fragment
 
         View view =  inflater.inflate(R.layout.fragment_category_form, container, false);
+        final RadioGroup radioGroup =(RadioGroup) view.findViewById(R.id.type);
+        final RadioButton btnTypeIn =(RadioButton) view.findViewById(R.id.typeIn);
+        final RadioButton btnTypeOut =(RadioButton) view.findViewById(R.id.typeOut);
         final EditText txtName =(EditText) view.findViewById(R.id.cName);
         final EditText txtDesc =(EditText) view.findViewById(R.id.cDesc);
+        type = MoneyType.expenses.toString();
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == btnTypeIn.getId()){
+                    type= MoneyType.expenses.toString();
+                }
+                if(checkedId == btnTypeOut.getId()){
+                    type= MoneyType.earnings.toString();
+                }
+            }
+        });
         Button btn  = (Button) view.findViewById(R.id.btnSubmit);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryOperations.SaveCategory(CategoryFormFragment.this,txtName.getText().toString(),txtDesc.getText().toString());
+                CategoryOperations.SaveCategory(CategoryFormFragment.this,txtName.getText().toString(),txtDesc.getText().toString(),type);
             }
         });
         return view;

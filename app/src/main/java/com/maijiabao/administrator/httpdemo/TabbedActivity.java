@@ -2,7 +2,9 @@ package com.maijiabao.administrator.httpdemo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -73,6 +75,7 @@ public class TabbedActivity extends AppCompatActivity {
         this.date = mSectionsPagerAdapter.getDate(mSectionsPagerAdapter.getCount()-1);
         this.setTitle(date);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setBackgroundColor(Color.TRANSPARENT);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,6 +126,8 @@ public class TabbedActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent  = new Intent(TabbedActivity.this,MainActivity.class);
+            startActivity(intent);
             return true;
         }
 

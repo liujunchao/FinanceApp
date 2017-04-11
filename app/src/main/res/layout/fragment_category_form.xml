@@ -2,6 +2,16 @@
 <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
 android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/frm" android:padding="10dp" >
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal" android:id="@+id/type">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="支出" android:checked="true" android:id="@+id/typeIn"  />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="收入" android:id="@+id/typeOut" />
+    </RadioGroup>
 <android.support.v7.widget.AppCompatEditText
     android:layout_width="match_parent"
     android:layout_height="wrap_content" android:id="@+id/cName"  android:hint="类别名称"  />
