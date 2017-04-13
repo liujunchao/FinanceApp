@@ -2,6 +2,8 @@ package com.maijiabao.administrator.httpdemo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -9,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -24,10 +27,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 import com.maijiabao.administrator.httpdemo.util.DateUtil;
 import com.maijiabao.administrator.httpdemo.util.HttpUtil;
+import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +60,7 @@ public class TabbedActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(mSectionsPagerAdapter.getCount()-1);
+
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -97,6 +104,12 @@ public class TabbedActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        LoadingUtil.initContext(TabbedActivity.this);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1:
@@ -129,6 +142,19 @@ public class TabbedActivity extends AppCompatActivity {
             Intent intent  = new Intent(TabbedActivity.this,MainActivity.class);
             startActivity(intent);
             return true;
+        }
+        if(id == R.id.action_changeName){
+           final   EditText txt  = new EditText(this);
+            new AlertDialog.Builder(this).setTitle("请输入名称").setIcon(android.R.drawable.ic_dialog_info).setView(
+                    txt).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String msg  = txt.getText().toString();
+                    if(msg!=null&& msg!=""){
+                        CategoryOperations.updateUserProfile(msg);
+                    }
+                }
+            }).setNegativeButton("取消", null).show();
         }
 
         return super.onOptionsItemSelected(item);

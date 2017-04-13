@@ -27,7 +27,7 @@
         android:layout_height="wrap_content" android:orientation="horizontal">
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="描述" />
+            android:layout_height="wrap_content" android:text="备注" />
         <android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"   android:id="@+id/txtDesc" />

@@ -14,6 +14,7 @@ public class Result {
             ex.printStackTrace();
         }
     }
+    //success 1 fail 0
     public String status;
     public String message;
 
@@ -22,5 +23,9 @@ public class Result {
         msg.what = Integer.parseInt(this.status);
         msg.obj = this;
         return msg;
+    }
+
+    public boolean isSuccess(){
+        return this.status.equals("1");
     }
 }

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
 import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
@@ -94,15 +95,32 @@ public class categoryFragment extends Fragment implements IOnCategoriesReceived,
 
     @Override
     public void CategoryRemoved(Result rlt) {
-        Message msg  = new Message();
-        msg.what = 10;
-        this.mHandler.sendMessage( msg);
+        this.Toast(rlt.message);
+        if(rlt.isSuccess()){
+            Message msg  = new Message();
+            msg.what = 10;
+            this.mHandler.sendMessage( msg);
+        }
+
     }
 
     @Override
     public void OnSaveCategory(Result rlt) {
-        isDataReload = true;
-        CategoryOperations.getCategories(this);
+        this.Toast(rlt.message);
+        if(rlt.isSuccess()){
+            isDataReload = true;
+            CategoryOperations.getCategories(this);
+        }
+
+    }
+
+    public void Toast(final String msg){
+        this.mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(categoryFragment.this.getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

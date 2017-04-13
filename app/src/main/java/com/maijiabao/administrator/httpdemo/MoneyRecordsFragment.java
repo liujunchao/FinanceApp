@@ -24,6 +24,7 @@ import com.maijiabao.administrator.httpdemo.interfaces.MoneyRecordListener;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.models.Category;
 import com.maijiabao.administrator.httpdemo.models.MoneyRecord;
+import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
 import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
 import org.json.JSONArray;
@@ -78,6 +79,7 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+            LoadingUtil.loading(mHandler);
         }
 
         return view;
@@ -93,13 +95,18 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
                 view.setAdapter(new MoneyRecordsRecyclerViewAdapter(list, MoneyRecordsFragment.this));
             }
         });
+        LoadingUtil.dismiss(mHandler);
     }
 
 
 
     @Override
     public void OnSaveMoneyRecords(Result rlt) {
-        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+        this.Toast(rlt.message);
+        if(rlt.isSuccess()){
+            MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+        }
+
     }
 
     @Override
@@ -108,14 +115,22 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
         mListener = null;
     }
 
-    public void MoneyRecordDeleted(Result rlt){
+    public void Toast(final String msg){
         this.mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MoneyRecordsFragment.this.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MoneyRecordsFragment.this.getContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
-        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+    }
+
+    public void MoneyRecordDeleted(Result rlt){
+
+       this.Toast(rlt.message);
+        if(rlt.isSuccess()){
+            MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+        }
+
     }
 
     @Override

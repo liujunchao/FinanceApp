@@ -24,6 +24,9 @@ public class MoneyRecord {
 
     public static ArrayList<MoneyRecord> convert(JSONArray array) {
         ArrayList<MoneyRecord> list = new ArrayList<MoneyRecord>();
+        if(array.length() == 0){
+            return list;
+        }
         try{
             for(int i =0,len = array.length();i<len;i++){
                 JSONObject json  = array.getJSONObject(i);

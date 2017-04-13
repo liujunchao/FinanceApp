@@ -49,7 +49,10 @@ public class MoneyRecordsOperations {
                 String str =  HttpUtil.sendPost(map,"getMoneyRecords");
 
                 try{
-                    JSONArray array  = new JSONArray(str);
+                    JSONArray array  = new JSONArray();
+                    if(!str.equals("[]")){
+                        array  = new JSONArray(str);
+                    }
                     op.OnRecordsReceived(array);
                 }catch (JSONException ex){
                     ex.printStackTrace();

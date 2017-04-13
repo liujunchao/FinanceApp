@@ -38,12 +38,13 @@ package com.maijiabao.administrator.httpdemo;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveMoneyRecords,IOnCategoriesReceived {
+public class MoneyRecordsFormFragment extends DialogFragment implements IOnCategoriesReceived {
 
     private Handler mhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
+
               Spinner spinner = (Spinner)getView().findViewById(R.id.spinnerCategory);
 
 
@@ -76,11 +77,7 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveM
         this.observer = observer;
     }
 
-    public void notifyObserver(){
-        if(this.observer!=null){
-            this.observer.OnSaveMoneyRecords(null);
-        }
-    }
+
 
     public void SetDate(String date){
         this.selectedDate  = date;
@@ -104,7 +101,7 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveM
             public void onClick(View v) {
                 String amount = txtAmount.getText().toString();
                 String desc = txtDesc.getText().toString();
-                MoneyRecordsOperations.SaveRecord(MoneyRecordsFormFragment.this,amount,desc,MoneyRecordsFormFragment.this.selectedCategory,MoneyRecordsFormFragment.this.selectedDate,MoneyRecordsFormFragment.this.type);
+                MoneyRecordsOperations.SaveRecord(MoneyRecordsFormFragment.this.observer,amount,desc,MoneyRecordsFormFragment.this.selectedCategory,MoneyRecordsFormFragment.this.selectedDate,MoneyRecordsFormFragment.this.type);
             }
         });
         type = MoneyType.expenses.toString();
@@ -117,23 +114,15 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnSaveM
                 if(checkedId == btnTypeOut.getId()){
                     type= MoneyType.earnings.toString();
                 }
+                CategoryOperations.getCategoriesByType(MoneyRecordsFormFragment.this,type);
             }
         });
 
-        CategoryOperations.getCategories(this);
+        CategoryOperations.getCategoriesByType(MoneyRecordsFormFragment.this,type);
         return view;
     }
 
-    @Override
-    public void OnSaveMoneyRecords(Result rlt) {
-        this.notifyObserver();
-        this.mhandler.post(new Runnable() {
-            @Override
-            public void run() {
-                getDialog().dismiss();
-            }
-        });
-    }
+
 
     @Override
     public void OnCategoriesReceived(JSONArray array) {

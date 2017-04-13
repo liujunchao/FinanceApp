@@ -2,6 +2,7 @@
     <string name="app_name">HttpDemo</string>
     <string name="title_activity_finance">FinanceActivity</string>
     <string name="action_settings">类别</string>
+    <string name="action_changeName">设置名称</string>
     <string name="section_format">Hello World from section: %1$s</string>
 
     <!-- TODO: Remove or change this placeholder text -->

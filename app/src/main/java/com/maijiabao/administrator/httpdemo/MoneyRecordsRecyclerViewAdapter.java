@@ -32,6 +32,7 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
         mValues = items;
         mListener = listener;
         this.position =0;
+
     }
 
     @Override
@@ -46,8 +47,11 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
                     .inflate(R.layout.fragment_record_right, parent, false);
         }
 
+
         return new ViewHolder(view);
     }
+
+
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
@@ -59,10 +63,11 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
            // holder.mAmountView.setText(holder.mItem.amount);
          //   holder.mCategoryNameView.setText(holder.mItem.categoryName);
             String desc = "";
+            String demo = holder.mItem.desc!=null&&  !holder.mItem.desc.equals("")? "(<font color='white'><em>备注:"+holder.mItem.desc+"</em></font>)":"";
             if(holder.mItem.type == MoneyType.expenses){
-                desc +=holder.mItem.creator+"在<b>"+holder.mItem.categoryName+"</b>花了"+"<b><font color='black' face='big'>"+holder.mItem.amount+"</font></b>块钱";
+                desc +=holder.mItem.creator+"在<b>"+holder.mItem.categoryName+"</b>花了"+"<b><font color='black' face='big'>"+holder.mItem.amount+"</font></b>块钱"+demo;
             }else  if(holder.mItem.type == MoneyType.earnings){
-                desc +=holder.mItem.creator+"在<b>"+holder.mItem.categoryName+"</b> 挣了"+"<b><font color='black' face='small'>"+holder.mItem.amount+"</font></b>块钱";
+                desc +=holder.mItem.creator+"在<b>"+holder.mItem.categoryName+"</b> 挣了"+"<b><font color='black' face='small'>"+holder.mItem.amount+"</font></b>块钱"+demo;
             }
 
             Spanned html =  Html.fromHtml(desc,0);

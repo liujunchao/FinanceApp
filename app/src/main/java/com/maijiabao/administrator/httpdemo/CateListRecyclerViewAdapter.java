@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maijiabao.administrator.httpdemo.ItemFragment.OnListFragmentInteractionListener;
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent.DummyItem;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRecyclerViewAdapter.ViewHolder> implements ICategoryRemoved {
+public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRecyclerViewAdapter.ViewHolder>     {
 
     private final ArrayList<Category>  mValues;
     private final ICategoryRemoved mListener;
@@ -45,7 +46,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(holder.mItem.categoryName);
         String type  = "花费";
-        if(holder.mItem.type == MoneyType.earnings.toString()){
+        if(holder.mItem.type.equals( MoneyType.earnings.toString())){
             type="收入";
         }
         holder.mContentView.setText(type);
@@ -53,7 +54,7 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
             @Override
             public void onClick(View v) {
                 pos = position;
-                CategoryOperations.dropCategory(CateListRecyclerViewAdapter.this,holder.mItem.id);
+                CategoryOperations.dropCategory(mListener,holder.mItem.id);
 
             }
         });
@@ -82,11 +83,9 @@ public class CateListRecyclerViewAdapter extends RecyclerView.Adapter<CateListRe
         return mValues.size();
     }
 
-    @Override
-    public void CategoryRemoved(Result rlt) {
 
-        this.mListener.CategoryRemoved(rlt);
-    }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;

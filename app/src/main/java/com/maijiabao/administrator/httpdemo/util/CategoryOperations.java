@@ -35,12 +35,48 @@ public class CategoryOperations {
         thread.start();
     }
 
+    public static void updateUserProfile(final String userName){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("userName",userName);
+                String str = HttpUtil.sendPost(map,"updateUserProfile");
+//                try{
+//                    JSONObject obj = new JSONObject(str);
+//                    op.OnSaveCategory(new Result(obj));
+//                }catch (JSONException ex){
+//                    ex.printStackTrace();
+//                }
+            }
+        });
+        thread.start();
+    }
+
     public static void getCategories(final IOnCategoriesReceived op){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 HashMap<String, String> map = new HashMap<String, String>();
                 String str =  HttpUtil.sendPost(map,"getCategories");
+                try{
+                    JSONArray array  = new JSONArray(str);
+                    op.OnCategoriesReceived(array);
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void getCategoriesByType(final IOnCategoriesReceived op,final  String type){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("type",type);
+                String str =  HttpUtil.sendPost(map,"getCategoriesByType");
                 try{
                     JSONArray array  = new JSONArray(str);
                     op.OnCategoriesReceived(array);

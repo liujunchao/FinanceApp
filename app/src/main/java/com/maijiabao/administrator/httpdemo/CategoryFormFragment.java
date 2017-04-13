@@ -32,11 +32,8 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
     private Handler mhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-           // super.handleMessage(msg);
-            //CategoryFormFragment.this.getView().setVisibility(View.GONE);
-            Toast.makeText(CategoryFormFragment.this.getActivity(),"保存成功", Toast.LENGTH_LONG).show();
             getDialog().dismiss();
-            CategoryFormFragment.this.notifyObserver();
+            CategoryFormFragment.this.notifyObserver(msg.obj);
         }
     };
      public CategoryFormFragment() {  }
@@ -49,9 +46,9 @@ public class CategoryFormFragment extends DialogFragment implements IOnSaveCateg
         this.observer = observer;
     }
 
-    public void notifyObserver(){
+    public void notifyObserver(Object obj){
         if(this.observer!=null){
-            this.observer.OnSaveCategory(null);
+            this.observer.OnSaveCategory((Result) obj);
         }
     }
 

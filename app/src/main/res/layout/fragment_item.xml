@@ -11,17 +11,24 @@ android:orientation="vertical">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/ic_delete"  android:layout_alignParentRight="true"   android:id="@+id/btnRemoveCate" />
-
-</RelativeLayout>
-<TextView
+        android:textAppearance="?attr/textAppearanceListItem"  />
+    <TextView
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/text_margin"
-    android:textAppearance="?attr/textAppearanceListItem" />
+    android:textAppearance="?attr/textAppearanceListItem" android:layout_toRightOf="@+id/id" />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_delete"  android:layout_alignParentRight="true" android:text="删除"   android:id="@+id/btnRemoveCate" />
+
+</RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_gravity="bottom"
+        />
 </LinearLayout>
