@@ -46,7 +46,8 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fragment_record_right, parent, false);
         }
-
+//            view = LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.fragment_record_right, parent, false);
 
         return new ViewHolder(view);
     }
@@ -54,9 +55,9 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
 
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        this.position = position+1;
-        holder.mItem = mValues.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int pos) {
+        this.position = pos+1;
+        holder.mItem = mValues.get(pos);
         if(holder.mItem!=null){
 
        //   holder.bubbleLayout.measureA
@@ -101,6 +102,7 @@ public class MoneyRecordsRecyclerViewAdapter extends RecyclerView.Adapter<MoneyR
             mView = view;
             mAmountView = (TextView) view.findViewById(R.id.amount);
             img  = (ImageButton) view.findViewById(R.id.btnRemoveRecord);
+
         }
     }
 }

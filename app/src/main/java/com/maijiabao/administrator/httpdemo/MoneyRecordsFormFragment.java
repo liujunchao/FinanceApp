@@ -44,7 +44,8 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnCateg
         @Override
         public void handleMessage(Message msg) {
             ArrayList<Category> list  = (ArrayList<Category>)msg.obj;
-
+            if(getView() == null)
+                return ;
               Spinner spinner = (Spinner)getView().findViewById(R.id.spinnerCategory);
 
 
@@ -101,6 +102,7 @@ public class MoneyRecordsFormFragment extends DialogFragment implements IOnCateg
             public void onClick(View v) {
                 String amount = txtAmount.getText().toString();
                 String desc = txtDesc.getText().toString();
+                MoneyRecordsFormFragment.this.dismiss();
                 MoneyRecordsOperations.SaveRecord(MoneyRecordsFormFragment.this.observer,amount,desc,MoneyRecordsFormFragment.this.selectedCategory,MoneyRecordsFormFragment.this.selectedDate,MoneyRecordsFormFragment.this.type);
             }
         });

@@ -38,6 +38,8 @@ import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TabbedActivity extends AppCompatActivity {
 
@@ -72,6 +74,7 @@ public class TabbedActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 TabbedActivity.this.date = mSectionsPagerAdapter.getDate(position);
                 TabbedActivity.this.setTitle(date);
+                TabbedActivity.this.loadMoneyRecords(position,TabbedActivity.this.date);
             }
 
             @Override
@@ -79,8 +82,10 @@ public class TabbedActivity extends AppCompatActivity {
 
             }
         });
-        this.date = mSectionsPagerAdapter.getDate(mSectionsPagerAdapter.getCount()-1);
+        int lastIndex = mSectionsPagerAdapter.getCount()-1;
+        this.date = mSectionsPagerAdapter.getDate(lastIndex);
         this.setTitle(date);
+        this.loadMoneyRecords(lastIndex,this.date);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setBackgroundColor(Color.TRANSPARENT);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +105,13 @@ public class TabbedActivity extends AppCompatActivity {
         }else{
             TelephonyManager mngr = (TelephonyManager) this.getSystemService(this.TELEPHONY_SERVICE);
             HttpUtil.setIMEI(mngr.getDeviceId(0));
+        }
+    }
+
+    private void loadMoneyRecords(final int position,final String date){
+        MoneyRecordsFragment fragment = (MoneyRecordsFragment)mSectionsPagerAdapter.getItem(position);
+        if(fragment!=null){
+            fragment.LoadMoneyRecords(date);
         }
     }
 

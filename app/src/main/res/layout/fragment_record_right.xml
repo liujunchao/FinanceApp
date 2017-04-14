@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"   android:layout_height="match_parent"
+<RelativeLayout android:layout_width="match_parent"   android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <com.daasuu.bl.BubbleLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:padding="1dp"
         android:id="@+id/bubble"
-        android:layout_alignParentRight="true"
-
         app:bl_arrowDirection="right"
+        android:layout_alignParentRight="true"
         app:bl_arrowHeight="8dp"
         app:bl_arrowPosition="16dp"
         app:bl_arrowWidth="8dp"
@@ -31,6 +30,7 @@
                 android:layout_margin="@dimen/text_margin"
                 android:textColor="@android:color/white"
                 android:textAppearance="?attr/textAppearanceListItem" />
+
 
             <!--<TextView-->
             <!--android:id="@+id/creator"-->

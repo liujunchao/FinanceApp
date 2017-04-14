@@ -41,6 +41,7 @@ public class MoneyRecordsOperations {
     }
 
     public static void getRecords(final IOnMoneyRecordReceived op, final String date){
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

@@ -40,6 +40,7 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
     private int mColumnCount = 1;
     private String mDate;
     private ItemFragment.OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
 
     private Handler mHandler = new Handler(){ };
 
@@ -72,17 +73,23 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
+            MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,this.mDate);
             LoadingUtil.loading(mHandler);
+
         }
 
         return view;
+    }
+
+    public void LoadMoneyRecords(String date){
+        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,date);
+        LoadingUtil.loading(mHandler);
     }
 
     @Override
@@ -91,11 +98,15 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
         this.mHandler.post(new Runnable() {
             @Override
             public void run() {
-                RecyclerView view =  (RecyclerView)getView();
-                view.setAdapter(new MoneyRecordsRecyclerViewAdapter(list, MoneyRecordsFragment.this));
+
+              //  RecyclerView view =  (RecyclerView)MoneyRecordsFragment.this.getView();
+                if(recyclerView!=null){
+                    recyclerView.setAdapter(new MoneyRecordsRecyclerViewAdapter(list, MoneyRecordsFragment.this));
+                }
+                LoadingUtil.dismiss(mHandler);
             }
         });
-        LoadingUtil.dismiss(mHandler);
+
     }
 
 

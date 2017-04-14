@@ -44,7 +44,8 @@ public class HttpUtil {
 
    public static String IMEI = "";
     public static    String sendPost( HashMap<String,String> dic,String method ){
-        String url = "http://192.168.1.51:3000/";
+       // String url = "http://192.168.1.51:3000/";
+       String url = "http://chaoyiyi.cn:3000/";
         String requestUrl = url+method;
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         for (Map.Entry<String,String> entry: dic.entrySet()){
