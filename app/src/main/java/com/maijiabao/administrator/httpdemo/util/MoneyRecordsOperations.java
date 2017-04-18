@@ -1,11 +1,14 @@
 package com.maijiabao.administrator.httpdemo.util;
 
+        import android.util.Log;
+
         import com.maijiabao.administrator.httpdemo.interfaces.ICategoryRemoved;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnCategoriesReceived;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordDeleted;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordReceived;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveMoneyRecords;
+        import com.maijiabao.administrator.httpdemo.interfaces.IVersionInfoFetched;
         import com.maijiabao.administrator.httpdemo.interfaces.Result;
 
         import org.json.JSONArray;
@@ -41,12 +44,12 @@ public class MoneyRecordsOperations {
     }
 
     public static void getRecords(final IOnMoneyRecordReceived op, final String date){
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("belongDate", date);
+                // Log.i("MoneyRecordsFragment","fetch data by http post with date  "+date);
                 String str =  HttpUtil.sendPost(map,"getMoneyRecords");
 
                 try{
@@ -54,7 +57,8 @@ public class MoneyRecordsOperations {
                     if(!str.equals("[]")){
                         array  = new JSONArray(str);
                     }
-                    op.OnRecordsReceived(array);
+                    op.OnRecordsReceived(array,date);
+                    Log.i("MoneyRecordsFragment","receive response  "+date);
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }
@@ -62,6 +66,8 @@ public class MoneyRecordsOperations {
         });
         thread.start();
     }
+
+
 
     public static void dropRecord(final IOnMoneyRecordDeleted op, final String id ){
         Thread thread = new Thread(new Runnable() {
@@ -73,6 +79,24 @@ public class MoneyRecordsOperations {
                 try{
                     JSONObject obj = new JSONObject(str);
                     op.MoneyRecordDeleted(new Result(obj));
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
+    public static void getVersion(final IVersionInfoFetched op  ){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                String str = HttpUtil.sendPost(map,"version");
+                try{
+                    JSONObject obj = new JSONObject(str);
+                    op.VersionInfoReceived(obj.getString("code"),obj.getString("url"));
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }

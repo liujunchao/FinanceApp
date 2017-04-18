@@ -16,35 +16,35 @@ public class LoadingUtil {
     }
 
     public static void loading(Handler handler){
-        if(dlg!=null){
-            return ;
-        }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(dlg!=null){
-                    return ;
-                }
-                if(ctx!=null){
-                    dlg  = new ProgressDialog(ctx);
-                    dlg.show();
-                    dlg.setCancelable(false);
-                    dlg.setMessage("后台处理中");
-                }
-            }
-        });
+//        if(dlg!=null){
+//            return ;
+//        }
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(dlg!=null){
+//                    return ;
+//                }
+//                if(ctx!=null){
+//                    dlg  = new ProgressDialog(ctx);
+//                    dlg.show();
+//                    dlg.setCancelable(false);
+//                    dlg.setMessage("后台处理中");
+//                }
+//            }
+//        });
     }
     public static void dismiss(Handler handler){
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(dlg!=null){
-                    dlg.hide();
-                    dlg.dismiss();
-                    dlg = null;
-                }
-            }
-        });
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(dlg!=null){
+//                    dlg.hide();
+//                    dlg.dismiss();
+//                    dlg = null;
+//                }
+//            }
+//        });
 
     }
 }

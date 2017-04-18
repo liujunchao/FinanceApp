@@ -7,7 +7,7 @@
         android:layout_height="wrap_content" android:orientation="horizontal" android:id="@+id/type">
         <RadioButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="支出" android:checked="true" android:id="@+id/typeIn"  />
+            android:layout_height="wrap_content" android:text="花费" android:checked="true" android:id="@+id/typeIn"  />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:text="收入" android:id="@+id/typeOut" />
@@ -44,5 +44,5 @@
     </android.support.v7.widget.LinearLayoutCompat>
     <android.support.v7.widget.AppCompatButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:text="submit money" android:id="@+id/btnSubmitMoney"  />
+        android:layout_height="wrap_content" android:text="记录" android:id="@+id/btnSubmitMoney"  />
 </LinearLayout>

@@ -43,7 +43,11 @@ public class HttpUtil {
     }
 
    public static String IMEI = "";
-    public static    String sendPost( HashMap<String,String> dic,String method ){
+    public static String sendPost( HashMap<String,String> dic,String method ){
+        HttpUtil util = new HttpUtil();
+        return util.sendPostImpl(dic,method);
+    }
+    public  String sendPostImpl( HashMap<String,String> dic,String method ){
        // String url = "http://192.168.1.51:3000/";
        String url = "http://chaoyiyi.cn:3000/";
         String requestUrl = url+method;
@@ -54,6 +58,7 @@ public class HttpUtil {
             pairs.add(new BasicNameValuePair(key,value));
         }
         HttpClient client  = new DefaultHttpClient();
+
         HttpPost post  = new HttpPost(requestUrl);
         try{
             post.addHeader("imei",IMEI);
@@ -61,6 +66,7 @@ public class HttpUtil {
 
         }catch (UnsupportedEncodingException e){
             e.printStackTrace();
+            Log.i("MoneyRecordsFragment",e.getMessage());
         }
         try {
             HttpResponse response = client.execute(post);
@@ -68,21 +74,28 @@ public class HttpUtil {
             if ( entity != null ) {
                 InputStream instream = entity.getContent();
                 byte[] bytes =  readStream(instream);
-               return new String(bytes);
+                String str  = new String(bytes);
+                Log.i("MoneyRecordsFragment","HttpPostResponse:"+str);
+               return str;
+            }else{
+                Log.i("MoneyRecordsFragment","HttpPostResponse:Null");
             }
         } catch (ClientProtocolException e) {
             // Log exception
             e.printStackTrace();
+            Log.i("MoneyRecordsFragment",e.getMessage());
         } catch (IOException e) {
             // Log exception
             e.printStackTrace();
+            Log.i("MoneyRecordsFragment",e.getMessage());
         }catch (Exception e){
             e.printStackTrace();
+            Log.i("MoneyRecordsFragment",e.getMessage());
         }
         return null;
     }
 
-    public static byte[] readStream(InputStream inStream) throws Exception {
+    public byte[] readStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len = -1;

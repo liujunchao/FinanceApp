@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,18 @@ import com.maijiabao.administrator.httpdemo.interfaces.MoneyRecordListener;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
 import com.maijiabao.administrator.httpdemo.models.Category;
 import com.maijiabao.administrator.httpdemo.models.MoneyRecord;
+import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
 import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordReceived,IOnSaveMoneyRecords,MoneyRecordListener,IOnMoneyRecordDeleted {
 
@@ -62,7 +68,10 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
 
         if (getArguments() != null) {
             mDate = getArguments().getString(DATE_KEY);
+        }else{
+            mDate = "strage date";
         }
+
     }
 
     @Override
@@ -79,7 +88,15 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            recyclerView.setAdapter(new MoneyRecordsRecyclerViewAdapter(new ArrayList<MoneyRecord>(), MoneyRecordsFragment.this));
+
+            Log.i("MoneyRecordsFragment","fetch data:"+this.mDate);
+
             MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,this.mDate);
+//            if(this.mDate.equals("20170417")){
+//                Log.i("MoneyRecordsFragment","fetch data2:"+this.mDate);
+//                getRecords(this,this.mDate);
+//            }
             LoadingUtil.loading(mHandler);
 
         }
@@ -87,21 +104,30 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
         return view;
     }
 
+
     public void LoadMoneyRecords(String date){
-        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,date);
-        LoadingUtil.loading(mHandler);
+//        MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,date);
+//        LoadingUtil.loading(mHandler);
     }
 
     @Override
-    public void OnRecordsReceived(JSONArray array) {
-      final ArrayList<MoneyRecord> list =  MoneyRecord.convert(array);
+    public void OnRecordsReceived(JSONArray array, final String belongDate) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        final ArrayList<MoneyRecord> list =  MoneyRecord.convert(array);
         this.mHandler.post(new Runnable() {
             @Override
             public void run() {
 
-              //  RecyclerView view =  (RecyclerView)MoneyRecordsFragment.this.getView();
                 if(recyclerView!=null){
+                    Log.i("MoneyRecordsFragment","recyclerView setAdapter size:"+list.size() +" date:"+MoneyRecordsFragment.this.mDate);
                     recyclerView.setAdapter(new MoneyRecordsRecyclerViewAdapter(list, MoneyRecordsFragment.this));
+                }else{
+                    Log.i("MoneyRecordsFragment","recyclerView is empty,i am retrying fetch date of  date "+MoneyRecordsFragment.this.mDate+", to be updated:"+list.size()+" date belong date :"+belongDate);
+                   // MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,MoneyRecordsFragment.this.mDate);
                 }
                 LoadingUtil.dismiss(mHandler);
             }
@@ -141,7 +167,6 @@ public class MoneyRecordsFragment extends Fragment implements IOnMoneyRecordRece
         if(rlt.isSuccess()){
             MoneyRecordsOperations.getRecords(MoneyRecordsFragment.this,mDate);
         }
-
     }
 
     @Override

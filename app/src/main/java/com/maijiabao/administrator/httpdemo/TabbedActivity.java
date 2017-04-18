@@ -5,8 +5,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +25,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,25 +34,32 @@ import android.view.ViewGroup;
 
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.maijiabao.administrator.httpdemo.adapters.SectionsPagerAdapter;
+import com.maijiabao.administrator.httpdemo.interfaces.IVersionInfoFetched;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 import com.maijiabao.administrator.httpdemo.util.DateUtil;
+import com.maijiabao.administrator.httpdemo.util.DownloadManager;
 import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
+import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TabbedActivity extends AppCompatActivity {
+public class TabbedActivity extends AppCompatActivity implements IVersionInfoFetched {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
 
     private String date;
+    Handler handler = new Handler() { };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +69,13 @@ public class TabbedActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
+        Log.i("MoneyRecordsFragment","activity start");
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(mSectionsPagerAdapter.getCount()-1);
 
+       // MoneyRecordsOperations.getVersion(this);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -74,7 +87,6 @@ public class TabbedActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 TabbedActivity.this.date = mSectionsPagerAdapter.getDate(position);
                 TabbedActivity.this.setTitle(date);
-                TabbedActivity.this.loadMoneyRecords(position,TabbedActivity.this.date);
             }
 
             @Override
@@ -85,7 +97,6 @@ public class TabbedActivity extends AppCompatActivity {
         int lastIndex = mSectionsPagerAdapter.getCount()-1;
         this.date = mSectionsPagerAdapter.getDate(lastIndex);
         this.setTitle(date);
-        this.loadMoneyRecords(lastIndex,this.date);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setBackgroundColor(Color.TRANSPARENT);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -108,13 +119,81 @@ public class TabbedActivity extends AppCompatActivity {
         }
     }
 
-    private void loadMoneyRecords(final int position,final String date){
-        MoneyRecordsFragment fragment = (MoneyRecordsFragment)mSectionsPagerAdapter.getItem(position);
-        if(fragment!=null){
-            fragment.LoadMoneyRecords(date);
+    //安装apk
+    protected void installApk(File file) {
+        Intent intent = new Intent();
+        //执行动作
+        intent.setAction(Intent.ACTION_VIEW);
+        //执行的数据类型
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
+    @Override
+    public void VersionInfoReceived(String code,final String downloadUrl) {
+       int iCode =   Integer.parseInt(code);
+
+        try {
+            int currentCode = getVersionCode();
+            if(iCode == currentCode){
+                return ;
+            }
+           this.handler.post(new Runnable() {
+               @Override
+               public void run() {
+                   showUpdataDialog(downloadUrl);
+               }
+           });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    private void downloadFile(final String url){
+        final ProgressDialog pd;    //进度条对话框
+        pd = new  ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setMessage("正在下载更新");
+        pd.show();
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    File file = DownloadManager
+                            .getFileFromServer(url, pd);
+                    sleep(3000);
+                    installApk(file);
+                    pd.dismiss(); //结束掉进度条对话框
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }}.start();
+    }
+
+    protected void showUpdataDialog(final  String downloadPath) {
+        AlertDialog.Builder builer = new AlertDialog.Builder(this);
+        builer.setTitle("版本升级");
+        builer.setMessage("版本升级，请在WIFI环境下进行");
+        //当点确定按钮时从服务器上下载 新的apk 然后安装   װ
+        builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+               downloadFile(downloadPath);
+            }
+        });
+        builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialog = builer.create();
+        dialog.show();
+    }
+    private int getVersionCode() throws Exception {
+        //getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageManager packageManager = getPackageManager();
+        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),
+                0);
+        return packInfo.versionCode;
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -173,59 +252,5 @@ public class TabbedActivity extends AppCompatActivity {
     }
 
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-
-        private MoneyRecordsFragment currentFragment;
-        private ArrayList<String> dateList = new ArrayList<String>();
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-            this.generateDays();
-        }
-
-
-
-        public void generateDays(){
-            Date dNow = new Date( );
-            SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
-            String currentDay  = ft.format(dNow);
-            String prevDay = DateUtil.previousMonthByDate(currentDay);
-            while (true){
-                this.dateList.add(prevDay);
-                if(currentDay.equals(prevDay)){
-                    break;
-                }
-                prevDay = DateUtil.tonextday(prevDay);
-            }
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-            this.currentFragment = (MoneyRecordsFragment) object;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            String date = dateList.get(position);
-            return MoneyRecordsFragment.newInstance(date);
-        }
-
-        public String getDate(int position){
-            return  dateList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return dateList.size();
-        }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "testing";
-        }
-    }
 }
