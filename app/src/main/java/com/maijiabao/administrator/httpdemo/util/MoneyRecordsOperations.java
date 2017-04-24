@@ -8,6 +8,7 @@ package com.maijiabao.administrator.httpdemo.util;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnMoneyRecordReceived;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveCategory;
         import com.maijiabao.administrator.httpdemo.interfaces.IOnSaveMoneyRecords;
+        import com.maijiabao.administrator.httpdemo.interfaces.IRecordsByRangeReceived;
         import com.maijiabao.administrator.httpdemo.interfaces.IVersionInfoFetched;
         import com.maijiabao.administrator.httpdemo.interfaces.Result;
 
@@ -97,6 +98,29 @@ public class MoneyRecordsOperations {
                 try{
                     JSONObject obj = new JSONObject(str);
                     op.VersionInfoReceived(obj.getString("code"),obj.getString("url"));
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public static void getCategoryGroupDataByRange(final IRecordsByRangeReceived op, final String startDate,final String endDate){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("startDate", startDate);
+                map.put("endDate", endDate);
+                String str =  HttpUtil.sendPost(map,"getMoneyRecordsByRange");
+
+                try{
+                    JSONArray array  = new JSONArray();
+                    if(!str.equals("[]")){
+                        array  = new JSONArray(str);
+                    }
+                    op.onRecordsByRangeReceived(array);
                 }catch (JSONException ex){
                     ex.printStackTrace();
                 }

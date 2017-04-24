@@ -361,4 +361,11 @@ public class DateUtil {
         return imptimeBegin;
     }
 
+    //返回当前日期，格式yyyyMMdd
+    public static String getCurrentSimpleDate(){
+        Date dNow = new Date( );
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+        return ft.format(dNow);
+    }
+
 }

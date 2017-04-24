@@ -25,9 +25,11 @@
         <TextView
             android:id="@+id/amount"
             android:layout_width="wrap_content"
+            android:maxWidth="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:textColor="@android:color/white"
+
             android:textAppearance="?attr/textAppearanceListItem" />
 
 
