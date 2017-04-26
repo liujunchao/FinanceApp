@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class PieChartActivity extends AppCompatActivity implements View.OnClickListener ,IRecordsByRangeReceived {
 
-    private TextView txtStart,txtEnd;
+    private TextView txtStart,txtEnd,txtSummary;
     private Button btnSearch;
     private PieChartFragment fragment;
     private Handler handler = new Handler();
@@ -40,7 +40,7 @@ public class PieChartActivity extends AppCompatActivity implements View.OnClickL
         btnSearch = (Button) findViewById(R.id.btnSearch);
         txtStart = (TextView) findViewById(R.id.txtStartDate);
         txtEnd = (TextView) findViewById(R.id.txtEndDate);
-
+        txtSummary = (TextView) findViewById(R.id.txtSummary);
         String currentDay  = DateUtil.getCurrentSimpleDate();
         String startDate  = DateUtil.getCurrentMonthFirstDayByDate(currentDay);
         txtStart.setText("开始时间:"+startDate);
@@ -87,10 +87,16 @@ public class PieChartActivity extends AppCompatActivity implements View.OnClickL
     }
     public void onRecordsByRangeReceived(JSONArray array){
         final ArrayList<CategorySummary> list = CategorySummary.convert(array);
+           float summary  = 0;
+        for (int i =0;i<list.size();i++){
+            summary += new Float(list.get(i).amount);
+        }
+        final  float sum  = summary;
         handler.post(new Runnable() {
             @Override
             public void run() {
-                PieChartActivity.this.fragment.setCategoryData(list);
+                PieChartActivity.this.fragment.setCategoryData(list,txtStart.getTag().toString(),txtEnd.getTag().toString());
+                txtSummary.setText("这段时间总计消费"+  sum+"元");
             }
         });
     }

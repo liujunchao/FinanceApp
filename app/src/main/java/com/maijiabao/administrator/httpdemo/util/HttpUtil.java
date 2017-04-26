@@ -48,7 +48,7 @@ public class HttpUtil {
         return util.sendPostImpl(dic,method);
     }
     public  String sendPostImpl( HashMap<String,String> dic,String method ){
-    //     String url = "http://192.168.1.51:3000/";
+       //  String url = "http://192.168.1.51:3000/";
         String url = "http://chaoyiyi.cn:3000/";
         String requestUrl = url+method;
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();

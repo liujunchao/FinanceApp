@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle ;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,8 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.maijiabao.administrator.httpdemo.MoneyRecordsFormFragment;
 import com.maijiabao.administrator.httpdemo.R;
+import com.maijiabao.administrator.httpdemo.controls.ListFragment;
+import com.maijiabao.administrator.httpdemo.interfaces.IRecordsByRangeReceived;
 import com.maijiabao.administrator.httpdemo.models.CategorySummary;
+import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +36,7 @@ import lecho.lib.hellocharts.view.Chart;
 import lecho.lib.hellocharts.view.PieChartView;
 
 
-public class PieChartFragment extends Fragment {
+public class PieChartFragment extends Fragment implements IRecordsByRangeReceived {
 
     private PieChartView chart;
     private PieChartData data;
@@ -39,8 +48,12 @@ public class PieChartFragment extends Fragment {
     private boolean hasCenterText2 = false;
     private boolean isExploded = false;
     private boolean hasLabelForSelected = false;
+    private String startDate;
+    private String endDate;
 
+    private ArrayList<CategorySummary> summaries;
     private ArrayList<SliceValue> values;
+    private Handler handler = new Handler();
 
     public PieChartFragment() {
     }
@@ -145,12 +158,17 @@ public class PieChartFragment extends Fragment {
         hasLabelForSelected = false;
     }
 
-    public void setCategoryData(ArrayList<CategorySummary> summaries){
+    public void setCategoryData(ArrayList<CategorySummary> summaries,String startDate,String endDate){
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.summaries = summaries;
         values = new ArrayList<SliceValue>();
         for (int i = 0; i < summaries.size(); ++i) {
             CategorySummary itm  = summaries.get(i);
             SliceValue sliceValue = new SliceValue(new Float(itm.amount), ChartUtils.pickColor());
+
             sliceValue.setLabel(itm.categoryName+":"+itm.amount+"元");
+
             values.add(sliceValue);
         }
         generateData();
@@ -256,13 +274,42 @@ public class PieChartFragment extends Fragment {
         generateData();
     }
 
-    /**
-     * To animate values you have to change targets values and then call {@link Chart#startDataAnimation()}
-     * method(don't confuse with View.animate()).
-     */
+
+
     private void prepareDataAnimation() {
         for (SliceValue value : data.getValues()) {
             value.setTarget((float) Math.random() * 30 + 15);
+        }
+    }
+
+    public void onRecordsByRangeReceived(JSONArray array){
+        if(array.length() == 0) return ;
+       final   ArrayList<String> list = new ArrayList<>();
+        try{
+            for(int i =0,len = array.length();i<len;i++){
+                JSONObject json  = array.getJSONObject(i);
+                StringBuilder builder = new StringBuilder();
+                builder.append( json.get("creator").toString());
+                builder.append( "于"+json.get("belongDate").toString()+"这天在");
+                builder.append( "<b>"+json.get("categoryName").toString()+"</b>" );
+                String desc = json.get("desc").toString();
+                if(!desc.equals("")){
+                    builder.append("<em>("+desc+")</em>");
+                }
+                builder.append("上花了");
+                builder.append( "<font color='red'>"+json.get("amount").toString()+"</font>元" );
+                list.add(builder.toString());
+            }
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ListFragment fragment  =  ListFragment.newInstance(list);
+                    fragment.show( getActivity().getFragmentManager(),"ListFragment");
+                }
+            });
+        }catch (JSONException ex){
+            ex.printStackTrace();
         }
     }
 
@@ -271,6 +318,21 @@ public class PieChartFragment extends Fragment {
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
           //  Toast.makeText(getActivity(), "Selected: " + value, Toast.LENGTH_SHORT).show();
+
+          //  MoneyRecordsOperations.getDetailsByRange();
+           String label =  String.valueOf(value.getLabelAsChars());
+            String categoryName = label.substring(0,label.indexOf(":"));
+            String categoryId = "";
+            for (int i = 0; i < summaries.size(); ++i) {
+                CategorySummary itm  = summaries.get(i);
+               if(itm.categoryName.equals(categoryName)){
+                   categoryId = itm.categoryId;
+                   break;
+               }
+            }
+            if(categoryId!=""){
+                MoneyRecordsOperations.getDetailsByRange(PieChartFragment.this,PieChartFragment.this.startDate,PieChartFragment.this.endDate,categoryId);
+            }
         }
 
         @Override

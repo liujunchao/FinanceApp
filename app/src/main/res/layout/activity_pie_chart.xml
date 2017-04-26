@@ -19,6 +19,15 @@ android:layout_height="wrap_content" android:orientation="horizontal">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" android:text="查询" android:layout_marginLeft="10dp" />
 </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content" android:id="@+id/txtSummary"
+            android:layout_height="wrap_content" android:text="" />
+
+    </LinearLayout>
     <FrameLayout
     android:id="@+id/container"
     android:layout_width="match_parent"

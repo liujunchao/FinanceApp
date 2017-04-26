@@ -20,6 +20,7 @@ public class SpinnerCategoryAdapter extends BaseCategoryAdapter {
         View convertView = this.inflater.inflate(android.R.layout.simple_spinner_item,null);
         // Lookup view for data population
         TextView name = (TextView) convertView.findViewById(android.R.id.text1);
+        name.setHeight(40);
         // Populate the data into the template view using the data object
         name.setText(category.categoryName);
         // Return the completed view to render on screen

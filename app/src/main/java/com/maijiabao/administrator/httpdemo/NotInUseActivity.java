@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
 
-public class FinanceActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
+public class NotInUseActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

@@ -21,6 +21,7 @@ public class DownloadManager {
             pd.setMax(conn.getContentLength());
             InputStream is = conn.getInputStream();
             File file = new File(Environment.getExternalStorageDirectory(), "updata.apk");
+
             FileOutputStream fos = new FileOutputStream(file);
             BufferedInputStream bis = new BufferedInputStream(is);
             byte[] buffer = new byte[1024];

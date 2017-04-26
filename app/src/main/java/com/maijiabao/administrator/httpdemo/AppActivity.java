@@ -2,25 +2,23 @@ package com.maijiabao.administrator.httpdemo;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,9 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maijiabao.administrator.httpdemo.adapters.SectionsPagerAdapter;
@@ -42,10 +38,11 @@ import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
 import com.maijiabao.administrator.httpdemo.util.DownloadManager;
 import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
+import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
 import java.io.File;
 
-public class ActivityDrawer extends AppCompatActivity
+public class AppActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,IVersionInfoFetched {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -53,6 +50,8 @@ public class ActivityDrawer extends AppCompatActivity
     private ViewPager mViewPager;
 
     private String date;
+
+    private String mDownloadUrl;
 
     Handler handler = new Handler() { };
 
@@ -62,17 +61,6 @@ public class ActivityDrawer extends AppCompatActivity
         setContentView(R.layout.activity_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MoneyRecordsFormFragment fragment  = new MoneyRecordsFormFragment();
-                fragment.SetDate( ActivityDrawer.this.date);
-                fragment.show(getFragmentManager(),"MoneyRecordsFormFragment");
-                fragment.addObserver(mSectionsPagerAdapter.currentFragment);
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -84,15 +72,35 @@ public class ActivityDrawer extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+         MoneyRecordsOperations.getVersion(this);
+
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) this, new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        }else{
+            TelephonyManager mngr = (TelephonyManager) this.getSystemService(this.TELEPHONY_SERVICE);
+            HttpUtil.setIMEI(mngr.getDeviceId(0));
+            this.initPagerAdapter();
+        }
+    }
+
+    private void initPagerAdapter(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MoneyRecordsFormFragment fragment  = new MoneyRecordsFormFragment();
+                fragment.SetDate( AppActivity.this.date);
+                fragment.show(getFragmentManager(),"MoneyRecordsFormFragment");
+                fragment.addObserver(mSectionsPagerAdapter.currentFragment);
+            }
+        });
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        Log.i("MoneyRecordsFragment","activity start");
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(mSectionsPagerAdapter.getCount()-1);
-
-        // MoneyRecordsOperations.getVersion(this);
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -101,8 +109,8 @@ public class ActivityDrawer extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                ActivityDrawer.this.date = mSectionsPagerAdapter.getDate(position);
-                ActivityDrawer.this.setTitle(date);
+                AppActivity.this.date = mSectionsPagerAdapter.getDate(position);
+                AppActivity.this.setTitle(date);
             }
 
             @Override
@@ -113,25 +121,23 @@ public class ActivityDrawer extends AppCompatActivity
         int lastIndex = mSectionsPagerAdapter.getCount()-1;
         this.date = mSectionsPagerAdapter.getDate(lastIndex);
         this.setTitle(date);
-
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) this, new String[]{Manifest.permission.READ_PHONE_STATE},1);
-        }else{
-            TelephonyManager mngr = (TelephonyManager) this.getSystemService(this.TELEPHONY_SERVICE);
-            HttpUtil.setIMEI(mngr.getDeviceId(0));
-        }
     }
 
 
     //安装apk
-    protected void installApk(File file) {
-        Intent intent = new Intent();
-        //执行动作
-        intent.setAction(Intent.ACTION_VIEW);
-        //执行的数据类型
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+    protected void installApk(File apkFile) {
+
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+//判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(AppActivity.this, BuildConfig.APPLICATION_ID + ".fileProvider", apkFile);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         startActivity(intent);
     }
 
@@ -147,7 +153,14 @@ public class ActivityDrawer extends AppCompatActivity
             this.handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    showUpdataDialog(downloadUrl);
+                    int permissionCheck = ContextCompat.checkSelfPermission(AppActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        AppActivity.this.mDownloadUrl = downloadUrl;
+                        ActivityCompat.requestPermissions(AppActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                    }else{
+                        showUpdataDialog(downloadUrl);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -167,9 +180,13 @@ public class ActivityDrawer extends AppCompatActivity
                 try {
                     File file = DownloadManager
                             .getFileFromServer(url, pd);
-                    sleep(3000);
-                    installApk(file);
-                    pd.dismiss(); //结束掉进度条对话框
+                    if(file == null){
+                        pd.dismiss();
+                    }else{
+                        sleep(3000);
+                        installApk(file);
+                        pd.dismiss(); //结束掉进度条对话框
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -196,14 +213,13 @@ public class ActivityDrawer extends AppCompatActivity
     private int getVersionCode() throws Exception {
         //getPackageName()是你当前类的包名，0代表是获取版本信息
         PackageManager packageManager = getPackageManager();
-        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),
-                0);
+        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),  0);
         return packInfo.versionCode;
     }
     @Override
     protected void onResume() {
         super.onResume();
-        LoadingUtil.initContext(ActivityDrawer.this);
+        LoadingUtil.initContext(AppActivity.this);
     }
 
     @Override
@@ -213,6 +229,19 @@ public class ActivityDrawer extends AppCompatActivity
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     TelephonyManager mngr = (TelephonyManager) this.getSystemService(this.TELEPHONY_SERVICE);
                     HttpUtil.setIMEI(mngr.getDeviceId(0));
+                    this.handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppActivity.this.initPagerAdapter();
+                        }
+                    });
+                }else{
+                    Toast.makeText(AppActivity.this,"没权限，无法使用该程序",Toast.LENGTH_LONG).show();
+                }
+                break;
+            case 2:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                     this.showUpdataDialog(this.mDownloadUrl);
                 }
                 break;
 
@@ -248,7 +277,7 @@ public class ActivityDrawer extends AppCompatActivity
 
 
         if (id == R.id.action_settings) {
-            Intent intent  = new Intent(ActivityDrawer.this,MainActivity.class);
+            Intent intent  = new Intent(AppActivity.this,CategoryActivity.class);
             startActivity(intent);
             return true;
         }
@@ -284,10 +313,10 @@ public class ActivityDrawer extends AppCompatActivity
 //
 //        }
         if (id == R.id.nav_share) {
-            Intent intent  = new Intent(ActivityDrawer.this,PieChartActivity.class);
+            Intent intent  = new Intent(AppActivity.this,PieChartActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-            Intent intent  = new Intent(ActivityDrawer.this,MainActivity.class);
+            Intent intent  = new Intent(AppActivity.this,CategoryActivity.class);
             startActivity(intent);
         }
 

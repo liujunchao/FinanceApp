@@ -128,4 +128,29 @@ public class MoneyRecordsOperations {
         });
         thread.start();
     }
+
+
+    public static void getDetailsByRange(final IRecordsByRangeReceived op, final String startDate,final String endDate,final String categoryId){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("startDate", startDate);
+                map.put("endDate", endDate);
+                map.put("categoryId", categoryId);
+                String str =  HttpUtil.sendPost(map,"getDetailsByRange");
+
+                try{
+                    JSONArray array  = new JSONArray();
+                    if(!str.equals("[]")){
+                        array  = new JSONArray(str);
+                    }
+                    op.onRecordsByRangeReceived(array);
+                }catch (JSONException ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
 }

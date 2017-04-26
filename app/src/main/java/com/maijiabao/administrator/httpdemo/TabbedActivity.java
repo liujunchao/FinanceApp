@@ -10,47 +10,31 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maijiabao.administrator.httpdemo.adapters.SectionsPagerAdapter;
 import com.maijiabao.administrator.httpdemo.interfaces.IVersionInfoFetched;
 import com.maijiabao.administrator.httpdemo.util.CategoryOperations;
-import com.maijiabao.administrator.httpdemo.util.DateUtil;
 import com.maijiabao.administrator.httpdemo.util.DownloadManager;
 import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 import com.maijiabao.administrator.httpdemo.util.LoadingUtil;
-import com.maijiabao.administrator.httpdemo.util.MoneyRecordsOperations;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class TabbedActivity extends AppCompatActivity implements IVersionInfoFetched {
 
@@ -230,7 +214,7 @@ public class TabbedActivity extends AppCompatActivity implements IVersionInfoFet
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent  = new Intent(TabbedActivity.this,MainActivity.class);
+            Intent intent  = new Intent(TabbedActivity.this,CategoryActivity.class);
             startActivity(intent);
             return true;
         }

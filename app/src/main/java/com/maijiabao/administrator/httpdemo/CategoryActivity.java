@@ -9,9 +9,8 @@ import android.view.View;
 
 import com.maijiabao.administrator.httpdemo.dummy.DummyContent;
 import com.maijiabao.administrator.httpdemo.interfaces.Result;
-import com.maijiabao.administrator.httpdemo.util.HttpUtil;
 
-public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
+public class CategoryActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
 
     private Handler mHandler = new Handler(){
@@ -19,12 +18,12 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             switch (msg.what){
                 case 1:
                     Result rlt =  (Result)msg.obj;
-                    MainActivity.this.notifyMessage(rlt.message);
+                    CategoryActivity.this.notifyMessage(rlt.message);
                     //rlt.message
                     break;
                 case 0:
                     Result rlt2 =  (Result)msg.obj;
-                    MainActivity.this.notifyMessage(rlt2.message);
+                    CategoryActivity.this.notifyMessage(rlt2.message);
                     break;
             }
         }
